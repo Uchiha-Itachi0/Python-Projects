@@ -5,13 +5,14 @@ import pandas
 # Creating window
 window = tk.Tk()
 # Reading our spanish data
-data = pandas.read_csv('data/Spanish_Practice.csv')
-spanish_word_list = [row.Spanish for _, row in data.iterrows()]
-english_word_list = [row.English for _, row in data.iterrows()]
-length_of_spanish_list = len(spanish_word_list)
-length_of_english_list = len(english_word_list)
-index_for_spanish = index_for_english = random.randint(0, length_of_english_list - 1)
 
+try:
+    data = pandas.read_csv('data/words_to_learn.csv')
+except (FileNotFoundError, pandas.errors.EmptyDataError):
+    data = pandas.read_csv('data/Spanish_Practice.csv')
+
+to_learn = data.to_dict(orient='records')
+current_card = random.choice(to_learn)
 
 # ------------------------------CONSTANT---------------------------------
 NAME = 'Flasher'
@@ -24,33 +25,45 @@ CARD_IMAGE_WIDTH = 800
 CARD_IMAGE_HEIGHT = 526
 FONT_FOR_TITLE = ('Arial', 30, 'italic')
 FONT_FOR_WORD = ('Arial', 50, 'bold')
+LENGTH_OF_WORD_LIST = len(to_learn)
+FLIP_TIME = 3000
 
 
-# -------------------------------------CHANGING OF WORD------------------------------------
-def change_word():
-    canvas.itemconfig(spanish_word_display, text=spanish_word_list[index_for_spanish])
+def flip_card():
+    canvas.itemconfig(canvas_img, image=card_back_img)
+    canvas.itemconfig(canvas_title, text='English', fill='white')
+    canvas.itemconfig(canvas_word, text=current_card['English'], fill='white')
+
+
+flip_timer = window.after(FLIP_TIME, flip_card)
 
 
 # -------------------------------------KNOWN BUTTON FUNCTIONALITY------------------------------------
 def known():
-    global spanish_word_list, index_for_spanish
-    if len(spanish_word_list) == 0:
-        canvas.itemconfig(spanish_word_display, text='Completed🥳🎉')
+    global current_card
+    if to_learn:
+        to_learn.remove(current_card)
+        new_data = pandas.DataFrame(to_learn)
+        new_data.to_csv("Data/Words_to_learn.csv", index=False)
+        unknown()
     else:
-        spanish_word_list.pop(index_for_spanish)
-        if len(spanish_word_list) == 0:
-            canvas.itemconfig(spanish_word_display, text='Completed🥳🎉')
-        else:
-            index_for_spanish = random.randint(0, len(spanish_word_list) - 1)
-            change_word()
+        canvas.itemconfig(canvas_word, text='Completed🥳🎉')
+    known_word.config(text=f'Known Words {LENGTH_OF_WORD_LIST - len(to_learn)}')
 
 
 # -------------------------------------UNKNOWN BUTTON FUNCTIONALITY------------------------------------
 def unknown():
-    global spanish_word_list
-    if len(spanish_word_list) != 0:
-        spanish_word_list.append(spanish_word_list.pop(index_for_spanish))
-        change_word()
+    global current_card, flip_timer
+    window.after_cancel(flip_timer)
+    if to_learn:
+        current_card = random.choice(to_learn)
+        canvas.itemconfig(canvas_img, image=card_front_img)
+        canvas.itemconfig(canvas_title, text='Spanish', fill='black')
+        canvas.itemconfig(canvas_word, text=current_card['Spanish'], fill='black')
+        flip_timer = window.after(FLIP_TIME, flip_card)
+    else:
+        canvas.itemconfig(canvas_word, text='Completed🥳🎉')
+    unknown_words.config(text=f'Unknown Words {len(to_learn)}')
 
 
 # ------------------------------UI-----------------------------------------
@@ -60,24 +73,31 @@ window.config(bg=WINDOW_BG_COLOR, padx=WINDOW_PAD_X, pady=WINDOW_PAD_Y)
 
 # Initializing of image path
 card_front_img = tk.PhotoImage(file='images/card_front.png')
+card_back_img = tk.PhotoImage(file='images/card_back.png')
 unknown_button_img = tk.PhotoImage(file='images/wrong.png')
 known_button_img = tk.PhotoImage(file='images/right.png')
 
 # All Stuff related to canvas
 canvas = tk.Canvas(width=CARD_IMAGE_WIDTH, height=CARD_IMAGE_HEIGHT, highlightthickness=0, bg=WINDOW_BG_COLOR)
-canvas.create_image(CARD_IMAGE_WIDTH // 2, CARD_IMAGE_HEIGHT // 2, image=card_front_img)
-canvas.create_text(CARD_IMAGE_WIDTH // 2, CARD_IMAGE_HEIGHT // 2 - 150, text='Spanish', font=FONT_FOR_TITLE)
-spanish_word_display = canvas.create_text(CARD_IMAGE_WIDTH // 2, CARD_IMAGE_HEIGHT // 2,
-                                          text=spanish_word_list[index_for_spanish],
-                                          font=FONT_FOR_WORD)
+canvas_img = canvas.create_image(CARD_IMAGE_WIDTH // 2, CARD_IMAGE_HEIGHT // 2, image=card_front_img)
+canvas_title = canvas.create_text(CARD_IMAGE_WIDTH // 2, CARD_IMAGE_HEIGHT // 2 - 150, text='Spanish',
+                                  font=FONT_FOR_TITLE)
+canvas_word = canvas.create_text(CARD_IMAGE_WIDTH // 2, CARD_IMAGE_HEIGHT // 2,
+                                 text=current_card['Spanish'],
+                                 font=FONT_FOR_WORD)
 
+# Creating Labels
+unknown_words = tk.Label(text=f'Unknown Words {len(to_learn)}', font=('Arial', 15), bg=WINDOW_BG_COLOR)
+known_word = tk.Label(text=f'Known Words {0}', font=('Arial', 15), bg=WINDOW_BG_COLOR)
 # Creating Button
 unknown_button = tk.Button(image=unknown_button_img, command=unknown)
 known_button = tk.Button(image=known_button_img, command=known)
 
 # Positioning
-canvas.grid(row=0, column=0, columnspan=3)
-unknown_button.grid(row=1, column=0)
-known_button.grid(row=1, column=2)
+canvas.grid(row=1, column=0, columnspan=3)
+unknown_words.grid(row=0, column=0)
+known_word.grid(row=0, column=2)
+unknown_button.grid(row=2, column=0)
+known_button.grid(row=2, column=2)
 # For window to appear continuously
 window.mainloop()
