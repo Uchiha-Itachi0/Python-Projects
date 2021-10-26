@@ -22,8 +22,10 @@ show it again.
 - If you don't know the answer then click on the cross button. Now this will tell the program that you don't know this 
 word, and therefore ask it later.</h5>
 
-<img src="Images_For_Readme/Flasher_Front_Card.png">
-<img src="Images_For_Readme/Flasher_Back_Image.png">
+<p align = center>
+<img src="Images_For_Readme/Flasher_Front_Card.png" height = 400 width = 400>
+<img src="Images_For_Readme/Flasher_Back_Card.png" height = 400 width = 400>
+</p>
 
 <h5>The smart thing about this app is that it will keep storing the word which you don't know and when you run the 
 application again it will ask only those word which you don't know.</h5>
