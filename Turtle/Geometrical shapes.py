@@ -22,7 +22,8 @@ screen.colormode(255)
 
 # To change the shape of pen.
 ghost.shape('circle')
-
+ghost.pensize(5)
+screen.title('Geometric shape')
 # To change the color of pen
 ghost.color('SlateGray2')
 
