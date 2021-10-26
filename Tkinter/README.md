@@ -1,4 +1,4 @@
-# TURTLE PROJECTS
+# TKINTER PROJECTS
 <h3>This folder contain all my Tkinter projects</h3>
 <br />
 <br />
@@ -13,7 +13,10 @@ the other side.Practicing active recall creates stronger neural connections in t
 method for improving memory.</h5>
 
 <h5>Flasher is based on this method. It shows the user a spanish word and wait for 3 second before reveling the answer.
-After that <br />
+After that
+<br />
+<br />
+
 - If you remember it then click on the check mark. Which tells the program that you remember this word and thus never 
 show it again.
 - If you don't know the answer then click on the cross button. Now this will tell the program that you don't know this 
