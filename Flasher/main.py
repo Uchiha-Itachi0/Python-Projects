@@ -7,9 +7,9 @@ window = tk.Tk()
 # Reading our spanish data
 
 try:
-    data = pandas.read_csv('data/words_to_learn.csv')
+    data = pandas.read_csv('Data/Words_to_learn.csv')
 except (FileNotFoundError, pandas.errors.EmptyDataError):
-    data = pandas.read_csv('data/Spanish_Practice.csv')
+    data = pandas.read_csv('Data/Spanish_Practice.csv')
 
 to_learn = data.to_dict(orient='records')
 current_card = random.choice(to_learn)
