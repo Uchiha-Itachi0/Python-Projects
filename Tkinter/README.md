@@ -23,8 +23,8 @@ show it again.
 word, and therefore ask it later.</h5>
 
 <p align = center>
-<img src="Images_For_Readme/Flasher_Front_Card.png" height = 400 width = 400>
-<img src="Images_For_Readme/Flasher_Back_Card.png" height = 400 width = 400>
+<img src="../Images_For_Readme/Flasher_Front_Card.png" height = 400 width = 400>
+<img src="../Images_For_Readme/Flasher_Back_Card.png" height = 400 width = 400>
 </p>
 
 <h5>The smart thing about this app is that it will keep storing the word which you don't know and when you run the 
